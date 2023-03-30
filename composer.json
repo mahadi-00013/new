@@ -1,5 +1,5 @@
 {
-    "name": "mahadi/swagger-ui-for-laravel-project",
+    "name": "mahadi/swagger-ui-for-laravel-projects",
     "description": "Swagger UI for Laravel Project With Custom Configuration Path.",
     "type": "library",
     "license": "MIT",
@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Mahadi\\SwaggerUiForLaravelProject\\": "src/"
+            "Mahadi\\SwaggerUiForLaravelProjects\\": "src/"
         }
     },
     "require": {
