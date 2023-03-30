@@ -1,6 +1,6 @@
 {
     "name": "mahadi/swagger-project",
-    "description": "Swagger UI for Laravel Project With Custom Configuration Path.",
+    "description": "Swagger UI for Laravel Project With Custom Configuration Paths.",
     "type": "library",
     "license": "MIT",
     "keywords": ["swagger", "swagger-ui", "laravel"],
