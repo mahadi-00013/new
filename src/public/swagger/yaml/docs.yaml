@@ -1,0 +1,4637 @@
+openapi: 3.0.0
+info:
+  title: GO NDC API
+  description: >-
+    _**GO NDC API Documentations**_
+
+
+    The entry point of the NDC API is "**Air Shopping"** but please hit
+    **"Health"** endpoint first to check if it's working.
+
+
+  version: 1.0.0
+servers:
+  - url: /api
+  # - url: http://localhost:1324
+  # - url: '{protocol}://{server}'
+  #   variables:
+  #     protocol:
+  #       enum:
+  #         - http
+  #         - https
+  #       default: http
+  #     server:
+  #       default: localhost:8000/api  # Local server
+  #       enum:
+  #         - localhost:8000/api
+  #         - localhost:1324 # NDC server
+paths:
+  /health:
+    get:
+      tags:
+        - SQ NDC API
+      summary: Health
+      description: >-
+        Just to check API call working or not!
+
+        API is working ok If you get **200** response status.
+
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /ndc/v1/sq/air_shopping:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Air Shopping
+      description: >-
+        Search NDC flight content only or combine with non-NDC flight content.
+
+
+        <h4><p>Request Parameters /
+        Payloads</p></h4><table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>trip_type</b></td><td>int</td><td>NO</td><td><b>1</b>:
+        One-Way, <b>2</b>: Round-Trip, <b>3</b>:
+        Multi-City</td></tr><tr><td><b>seat_class</b></td><td>string</td><td>NO</td><td>Economy
+        / Business, etc.<br>Most common codes are:<br><b>Y</b>: Full-fare
+        economy-class ticket.<br><b>J</b>: Full-fare business-class
+        ticket.<br><b>F</b>: Full-fare first-class
+        ticket.<br></td></tr><tr><td><b>itinerary_list</b></td><td>array</td><td>NO</td><td>Travel
+        path related info
+        (<b>departure_city_code</b>,<br><b>departure_date</b>,<br><b>arrival_city_code)</b><br></td></tr><tr><td><b>departure_city_code</b></td><td>string</td><td>NO</td><td>Departure
+        Airport/Departure City IATA
+        Code</td></tr><tr><td><b>departure_date</b></td><td>string</td><td>NO</td><td>Departure
+        date</td></tr><tr><td><b>arrival_city_code</b></td><td>string</td><td>NO</td><td>Arrival
+        Airport/Arrival City IATA
+        Code</td></tr><tr><td><b>passenger_list</b></td><td>inferred</td><td>NO</td><td>Passenger
+        information <b>(adt_count, chd_count,
+        inf_count)</b></td></tr><tr><td><b>adt_count</b></td><td>int</td><td>NO</td><td>Total
+        number of
+        adults</td></tr><tr><td><b>chd_count</b></td><td>int</td><td>YES</td><td>Total
+        number of
+        children</td></tr><tr><td><b>inf_count</b></td><td>int</td><td>YES</td><td>Total
+        number of infants</td></tr></tbody></table>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                gds_code: 26
+                trip_type: 1
+                seat_class: 'Y'
+                itinerary_list:
+                  - departure_city_code: TYO
+                    departure_date: '2023-03-08'
+                    arrival_city_code: LAX
+                passenger_list:
+                  adt_count: 1
+      # parameters:
+        # - name: Content-Type
+        #   in: header
+        #   schema:
+        #     type: string
+        #   example: application/json
+        # - name: version
+        #   in: path
+        #   schema:
+        #     type: string
+        #     example: v1
+        #   required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:25:41 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                result:
+                  - product_index: 1
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 99000
+                    fare_amount_total: 107710
+                    total_amount: 107710
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T18:15:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: PT10H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'N'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: N16JPW8
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 107710
+                        air_discount_amount: 0
+                        tax: 8710
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-1
+                      offer_item_id: SP2F-3102613995809601570-1-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 2
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 153000
+                    fare_amount_total: 161710
+                    total_amount: 161710
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T18:15:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: PT10H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: W
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: W14JPW8
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 161710
+                        air_discount_amount: 0
+                        tax: 8710
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-2
+                      offer_item_id: SP2F-3102613995809601570-2-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 3
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 246000
+                    fare_amount_total: 254710
+                    total_amount: 254710
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T18:15:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: PT10H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: E
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: E12JPW8
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 254710
+                        air_discount_amount: 0
+                        tax: 8710
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-4
+                      offer_item_id: SP2F-3102613995809601570-4-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 4
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 888600
+                    fare_amount_total: 898210
+                    total_amount: 898210
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T10:55:00'
+                          arr_airport_cd: SIN
+                          arr_datetime: '2023-03-08T17:45:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '637'
+                          flight_hours: PT23H55M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                        - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: SIN
+                          dep_datetime: '2023-03-08T18:40:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T17:50:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '36'
+                          flight_hours: PT23H55M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 898210
+                        air_discount_amount: 0
+                        tax: 9610
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-6
+                      offer_item_id: SP2F-3102613995809601570-6-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 5
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 888600
+                    fare_amount_total: 898210
+                    total_amount: 898210
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T10:55:00'
+                          arr_airport_cd: SIN
+                          arr_datetime: '2023-03-08T17:45:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '637'
+                          flight_hours: P1DT2H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                        - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: SIN
+                          dep_datetime: '2023-03-08T20:45:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T19:55:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '38'
+                          flight_hours: P1DT2H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 898210
+                        air_discount_amount: 0
+                        tax: 9610
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-7
+                      offer_item_id: SP2F-3102613995809601570-7-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 6
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 888600
+                    fare_amount_total: 898600
+                    total_amount: 898600
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: HND
+                          dep_datetime: '2023-03-08T08:50:00'
+                          arr_airport_cd: SIN
+                          arr_datetime: '2023-03-08T15:25:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '631'
+                          flight_hours: P1DT2H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                        - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: SIN
+                          dep_datetime: '2023-03-08T18:40:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T17:50:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '36'
+                          flight_hours: P1DT2H0M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 898600
+                        air_discount_amount: 0
+                        tax: 10000
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-8
+                      offer_item_id: SP2F-3102613995809601570-8-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 7
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 888600
+                    fare_amount_total: 898600
+                    total_amount: 898600
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: HND
+                          dep_datetime: '2023-03-08T08:50:00'
+                          arr_airport_cd: SIN
+                          arr_datetime: '2023-03-08T15:25:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '631'
+                          flight_hours: P1DT4H5M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                        - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: SIN
+                          dep_datetime: '2023-03-08T20:45:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T19:55:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '38'
+                          flight_hours: P1DT4H5M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 898600
+                        air_discount_amount: 0
+                        tax: 10000
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-9
+                      offer_item_id: SP2F-3102613995809601570-9-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 8
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 888600
+                    fare_amount_total: 900190
+                    total_amount: 900190
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: HND
+                          dep_datetime: '2023-03-08T22:55:00'
+                          arr_airport_cd: SIN
+                          arr_datetime: '2023-03-09T05:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '635'
+                          flight_hours: P1DT5H20M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info: null
+                        - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: SIN
+                          dep_datetime: '2023-03-09T09:20:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-09T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: P1DT5H20M
+                          equipment: ''
+                          cabin_class: M
+                          booking_class: 'Y'
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 1
+                          airfare_class: ECO
+                          translated_airfare_class: ''
+                          fare_basis: YIFSQ
+                          technical_stop_info:
+                            - airport_cd: NRT
+                              arr_datetime: '2023-03-09T17:05:00'
+                              dep_datetime: '2023-03-09T18:15:00'
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 900190
+                        air_discount_amount: 0
+                        tax: 11590
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-10
+                      offer_item_id: SP2F-3102613995809601570-10-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 9
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 198000
+                    fare_amount_total: 206710
+                    total_amount: 206710
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T18:15:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: PT10H0M
+                          equipment: ''
+                          cabin_class: W
+                          booking_class: L
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECOPREMIUM
+                          translated_airfare_class: ''
+                          fare_basis: L14JPW8
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 206710
+                        air_discount_amount: 0
+                        tax: 8710
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-3
+                      offer_item_id: SP2F-3102613995809601570-3-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                  - product_index: 10
+                    gds_cd: 26
+                    carrier_cd: SQ
+                    is_sold_out: false
+                    is_baggage_in_fare: false
+                    is_possible_to_select_baggage: false
+                    base_amount: 300000
+                    fare_amount_total: 308710
+                    total_amount: 308710
+                    currency_code: JPY
+                    ticketing_limit: '2023-01-18T05:55:41Z'
+                    pax_total: 1
+                    payment_type: 1
+                    responses_id: SP2F-3102613995809601570
+                    flight_detail:
+                      - - itinerary_no: 1
+                          segment_no: 1
+                          dep_airport_cd: NRT
+                          dep_datetime: '2023-03-08T18:15:00'
+                          arr_airport_cd: LAX
+                          arr_datetime: '2023-03-08T11:15:00'
+                          marketing_airline_cd: SQ
+                          operating_airline_cd: SQ
+                          flight_no: '12'
+                          flight_hours: PT10H0M
+                          equipment: ''
+                          cabin_class: W
+                          booking_class: T
+                          is_possible_to_select_seat: true
+                          available: 0
+                          num_stops: 0
+                          airfare_class: ECOPREMIUM
+                          translated_airfare_class: ''
+                          fare_basis: T12JPW8
+                          technical_stop_info: null
+                    fare_detail_of_each_pax_type:
+                      type_adt:
+                        pax_type: ADT
+                        air_amount: 308710
+                        air_discount_amount: 0
+                        tax: 8710
+                        pax_total: 1
+                      type_chd:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                      type_inf:
+                        pax_type: ''
+                        air_amount: 0
+                        air_discount_amount: 0
+                        tax: 0
+                        pax_total: 0
+                    ndc_params:
+                      offer_id: SP2F-3102613995809601570-5
+                      offer_item_id: SP2F-3102613995809601570-5-1
+                      pax_references:
+                        adt_pax_ref:
+                          - PAX1
+                        chd_pax_ref: null
+                        inf_pax_ref: null
+                plating_carrier_list:
+                  - SQ
+  /ndc/v1/sq/offer_price:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Offer Price
+      description: >-
+        Price the offer and give users options to customize their flights.
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>product_index</b></td><td>int</td><td>NO</td><td><b>product_index
+        </b>is<b> </b>returned by "<b>air_shopping</b>" endpoint
+        response</td></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>ndc_params</b>
+        are returned by "<b>air_shopping</b>" endpoint response<br><b>(offer_id,
+        offer_item_id,
+        pax_references)</b><br></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td><b>offer_id</b>
+        is returned by <b>"air_shopping" </b>endpoint
+        response</td></tr><tr><td><b>offer_item_id</b></td><td>string</td><td>NO</td><td><b>offer_item_id</b>
+        is returned by <b>"air_shopping" </b>endpoint
+        response</td></tr><tr><td><b>pax_references</b></td><td>inferred</td><td>NO</td><td>Passenger
+        ID information <b>(adt_pax_ref, chd_pax_ref,
+        inf_pax_ref)</b></td></tr><tr><td><b>adt_pax_ref</b></td><td>array</td><td>NO</td><td>ex.
+        PAX1</td></tr><tr><td><b>chd_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX2</td></tr><tr><td><b>inf_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX11</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              product_index: 1
+              gds_code: 26
+              ndc_params:
+                offer_id: offer_id
+                offer_item_id: offer_item_id
+                pax_references:
+                  adt_pax_ref:
+                    - PAX1
+                  chd_pax_ref: null
+                  inf_pax_ref: null
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:25:54 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                product_index: 1
+                gds_cd: 26
+                carrier_cd: SQ
+                is_sold_out: false
+                is_baggage_in_fare: false
+                is_possible_to_select_baggage: false
+                base_amount: 99000
+                fare_amount_total: 107710
+                total_amount: 107710
+                currency_code: JPY
+                ticketing_limit: '2023-01-21T14:00:00Z'
+                pax_total: 1
+                payment_type: 1
+                responses_id: SP2F-3102613995809601570
+                flight_detail:
+                  - - journey_id: journey_1
+                      itinerary_no: 1
+                      segment_no: 1
+                      dep_airport_cd: NRT
+                      dep_datetime: '2023-03-08T18:15:00'
+                      arr_airport_cd: LAX
+                      arr_datetime: '2023-03-08T11:15:00'
+                      marketing_airline_cd: SQ
+                      operating_airline_cd: ''
+                      flight_no: '12'
+                      flight_hours: PT10H0M
+                      equipment: ''
+                      cabin_class: M
+                      booking_class: 'N'
+                      is_possible_to_select_seat: true
+                      available: 0
+                      numstops: 0
+                      airfare_class: ECO
+                      translated_airfare_class: ''
+                      technical_stop_info: []
+                      service_id: '1'
+                default_ssr:
+                  - journey_id: journey_1
+                    ssr_list:
+                      - service_type: CheckedBag
+                        has_exist_quantity_concept: true
+                        max_quantity: 2
+                        max_weight_kg: 0
+                        max_weight_lb: 0
+                        target_paxes:
+                          - PAX1
+                fare_basis:
+                  - code: N16JPW8
+                    remarks:
+                      - category: FT
+                        remark: NEGOTIATED FARE
+                    fare_rules:
+                      - penalty_id: AMNT1
+                        description: Reissue/Refund minimum penalty amount before departure
+                        curCode: JPY
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 0
+                      - penalty_id: AMNT3
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          before departure
+                        curCode: JPY
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 15000
+                      - penalty_id: AMNT9
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          before departure no show
+                        curCode: JPY
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 30000
+                      - penalty_id: AMNT15
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          after departure
+                        curCode: JPY
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 0
+                      - penalty_id: AMNT21
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          after departure no show
+                        curCode: JPY
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 0
+                      - penalty_id: FLAG4
+                        description: >-
+                          Reissue/Refund before departure allowed? Allowed with
+                          restrictions
+                        curCode: ''
+                        cange_fee_ind: true
+                        cancel_fee_ind: false
+                        penalty_amount: 0
+                      - penalty_id: AMNT27
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          after departure
+                        curCode: JPY
+                        cange_fee_ind: false
+                        cancel_fee_ind: true
+                        penalty_amount: 0
+                      - penalty_id: AMNT30
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          after departure no show
+                        curCode: JPY
+                        cange_fee_ind: false
+                        cancel_fee_ind: true
+                        penalty_amount: 0
+                      - penalty_id: AMNT31
+                        description: Reissue/Refund minimum penalty amount before departure
+                        curCode: JPY
+                        cange_fee_ind: false
+                        cancel_fee_ind: true
+                        penalty_amount: 30000
+                      - penalty_id: AMNT33
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          before departure
+                        curCode: JPY
+                        cange_fee_ind: false
+                        cancel_fee_ind: true
+                        penalty_amount: 30000
+                      - penalty_id: AMNT36
+                        description: >-
+                          Reissue/Refund maximum penalty amount for the ticket
+                          before departure no show
+                        curCode: JPY
+                        cange_fee_ind: false
+                        cancel_fee_ind: true
+                        penalty_amount: 60000
+                    segment_list:
+                      - SEG2
+                fare_detail_of_each_pax_type:
+                  type_adt:
+                    pax_type: ADT
+                    air_amount: 107710
+                    air_discount_amount: 0
+                    tax: 8710
+                    pax_total: 1
+                  type_chd:
+                    pax_type: ''
+                    air_amount: 0
+                    air_discount_amount: 0
+                    tax: 0
+                    pax_total: 0
+                  type_inf:
+                    pax_type: ''
+                    air_amount: 0
+                    air_discount_amount: 0
+                    tax: 0
+                    pax_total: 0
+                ndc_params:
+                  offer_id: SP2F-3102613995809601570-1
+                  offer_item_id: SP2F-3102613995809601570-1-1
+                  service_id: '1'
+                  pax_references:
+                    adt_pax_ref:
+                      - PAX1
+                    chd_pax_ref: null
+                    inf_pax_ref: null
+                plating_carrier_list:
+                  - SQ
+  /ndc/v1/sq/service_list:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Service List
+      description: >-
+        Search and book ancillary products from the airline’s full catalog of
+        free and paid services.
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Service List
+
+        >
+
+        > or
+
+        >
+
+        > Air Shopping → Offer Price → Order Create → Service List
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>product_index</b></td><td>int</td><td>NO</td><td><b>product_index
+        </b>is<b> </b>returned by "<b>air_shopping</b>" endpoint
+        response</td></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>ndc_params
+        </b>are<b> </b>returned by <b>"air_shopping"</b> endpoint
+        response<br><b>(order_id, offer_id, offer_item_id, service_id,
+        pax_references)</b><br></td></tr><tr><td><b>order_id</b></td><td>string</td><td>??</td><td><b>Required
+        if the request occur after "order_create"
+        request</b></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td><b>offer_id</b>
+        is returned by <b>"air_shopping"</b> endpoint
+        response</td></tr><tr><td><b>offer_item_id</b></td><td>string</td><td>NO</td><td><b>offer_item_id</b>
+        is returned by <b>"air_shopping"</b> endpoint
+        response</td></tr><tr><td><b>service_id</b></td><td>string</td><td>NO</td><td><b>service_id</b>
+        is returned by <b>"offer_price"</b> endpoint
+        response</td></tr><tr><td><b>pax_references</b></td><td>inferred</td><td>NO</td><td>Passenger
+        ID information <b>(adt_pax_ref, chd_pax_ref,
+        inf_pax_ref)</b></td></tr><tr><td><b>adt_pax_ref</b></td><td>array</td><td>NO</td><td>ex.
+        PAX1</td></tr><tr><td><b>chd_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX2</td></tr><tr><td><b>inf_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX11</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              ndc_params:
+                order_id: SQ_556154
+                offer_id: offer_id
+                offer_item_id: offer_item_id
+                service_id: ss
+                pax_references:
+                  adt_pax_ref:
+                    - PAX1
+                  chd_pax_ref: null
+                  inf_pax_ref: null
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:27:45 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '733'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                flight_list:
+                  - marketing_airline_cd: SQ
+                    flight_no: '12'
+                    flight_number: SQ12
+                    dep_datetime: '2023-03-08T18:15:00'
+                    dep_airport_cd: NRT
+                    arr_datetime: '2023-03-08T11:15:00'
+                    arr_airport_cd: LAX
+                additional_ssr_list:
+                  - target_flight_number_list:
+                      - SQ12
+                    gds_code: 26
+                    career_cd: SQ
+                    service_detail:
+                      service_type: BAG
+                      has_exist_quantity_concept: true
+                      max_quantity: 1
+                      max_weight_kg: 0
+                      max_weight_lb: 0
+                      total_amount: 15680
+                      base_amount: 15680
+                      currency_code: JPY
+                      tax: 0
+                      target_pax_list:
+                        adt_reference_id:
+                          - PAX2
+                        chd_reference_id: null
+                        inf_reference_id: null
+                      ndc_offer_item_id: SP2P-735479626693491421-1-2
+                ndc_offer_id: SP2P-735479626693491421-1
+                ndc_response_id: SP2P-735479626693491421
+  /ndc/v1/sq/seat_availability:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Seat Availability
+      description: >-
+        Get seat layout, availability and pricing and enable seat selection for
+        your users.
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Seat Availibility
+
+        >
+
+        > or
+
+        >
+
+        > Air Shopping → Offer Price → Order Create → Seat Availibility
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>product_index</b></td><td>int</td><td>NO</td><td><b>product_index</b>
+        is returned by "<b>air_shopping</b>" endpoint
+        response</td></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>ndc_params
+        </b>are<b> </b>returned by <b>"air_shopping"</b> endpoint response
+        (<b>order_id, offer_id, offer_item_id,
+        pax_references)</b><br></td></tr><tr><td><b>order_id</b></td><td>string</td><td>??</td><td><b>Required
+        if the request occur after "order_create"
+        request</b></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td><b>offer_id</b>
+        is returned by <b>"air_shopping"</b> endpoint
+        response</td></tr><tr><td><b>offer_item_id</b></td><td>string</td><td>NO</td><td><b>offer_item_id</b>
+        is returned by <b>"air_shopping"</b> endpoint
+        response</td></tr><tr></tr><tr><td><b>pax_references</b></td><td>inferred</td><td>NO</td><td>Passenger
+        ID information <b>(adt_pax_ref, chd_pax_ref,
+        inf_pax_ref)</b></td></tr><tr><td><b>adt_pax_ref</b></td><td>array</td><td>NO</td><td>ex.
+        PAX1</td></tr><tr><td><b>chd_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX2</td></tr><tr><td><b>inf_pax_ref</b></td><td>array</td><td>??</td><td>Depends
+        on <b>"air_shopping"</b> endpoint request.<br>ex.
+        PAX11</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              product_index: 1
+              gds_code: 26
+              ndc_params:
+                order_id: order_id
+                offer_id: offer_id
+                offer_item_id: offer_item_id
+                pax_references:
+                  adt_pax_ref:
+                    - PAX1
+                  chd_pax_ref: null
+                  inf_pax_ref: null
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:26:35 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                flight_list:
+                  - marketing_airline_cd: SQ
+                    flight_no: '0012'
+                    flight_number: SQ0012
+                    dep_datetime: '2023-03-08T18:15:00'
+                    dep_airport_cd: NRT
+                    arr_datetime: ''
+                    arr_airport_cd: LAX
+                    technical_stop: null
+                seat_info:
+                  - flight_number: SQ0012
+                    seat_name_list:
+                      - PREMIUM SEAT
+                      - FORWARD ZONE
+                      - STANDARD ZONE
+                    seat_price_list:
+                      - seat_name: PREMIUM SEAT
+                        offer_item_id: PRICE1-SEG1-JPY
+                        amount: 13070
+                        currency_code: JPY
+                        pax_references:
+                          - PAX2
+                      - seat_name: FORWARD ZONE
+                        offer_item_id: PRICE2-SEG1-JPY
+                        amount: 5230
+                        currency_code: JPY
+                        pax_references:
+                          - PAX2
+                      - seat_name: STANDARD ZONE
+                        offer_item_id: PRICE3-SEG1-JPY
+                        amount: 2620
+                        currency_code: JPY
+                        pax_references:
+                          - PAX2
+                    column_list:
+                      - A
+                      - B
+                      - C
+                      - D
+                      - E
+                      - G
+                      - H
+                      - J
+                      - K
+                    seat_map:
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 41A
+                        line: '41'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - L
+                          - OW
+                          - W
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 41B
+                        line: '41'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - L
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 41C
+                        line: '41'
+                        column: C
+                        availability: false
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 41D
+                        line: '41'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - B
+                          - CH
+                          - FC
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 41E
+                        line: '41'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                          - FC
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 41G
+                        line: '41'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - B
+                          - CH
+                          - FC
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 41H
+                        line: '41'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 41J
+                        line: '41'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - L
+                          - OW
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 41K
+                        line: '41'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - L
+                          - OW
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42A
+                        line: '42'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - OW
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42B
+                        line: '42'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42C
+                        line: '42'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42D
+                        line: '42'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42E
+                        line: '42'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42G
+                        line: '42'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42H
+                        line: '42'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42J
+                        line: '42'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 42K
+                        line: '42'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - OW
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43A
+                        line: '43'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - OW
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43B
+                        line: '43'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43C
+                        line: '43'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43D
+                        line: '43'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43E
+                        line: '43'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43G
+                        line: '43'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43H
+                        line: '43'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43J
+                        line: '43'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                          - OW
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 43K
+                        line: '43'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - OW
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44A
+                        line: '44'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44B
+                        line: '44'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44C
+                        line: '44'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44D
+                        line: '44'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44E
+                        line: '44'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44G
+                        line: '44'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44H
+                        line: '44'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44J
+                        line: '44'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 44K
+                        line: '44'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45A
+                        line: '45'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45B
+                        line: '45'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45C
+                        line: '45'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45D
+                        line: '45'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45E
+                        line: '45'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45G
+                        line: '45'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45H
+                        line: '45'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45J
+                        line: '45'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 45K
+                        line: '45'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46A
+                        line: '46'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46B
+                        line: '46'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46C
+                        line: '46'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46D
+                        line: '46'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46E
+                        line: '46'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46G
+                        line: '46'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46H
+                        line: '46'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - FC
+                          - H
+                          - I
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46J
+                        line: '46'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - FC
+                      - seat_name: FORWARD ZONE
+                        offer_item_ids:
+                          - PRICE2-SEG1-JPY
+                        designator: 46K
+                        line: '46'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - FC
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47A
+                        line: '47'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47B
+                        line: '47'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47C
+                        line: '47'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47D
+                        line: '47'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47E
+                        line: '47'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47G
+                        line: '47'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47H
+                        line: '47'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47J
+                        line: '47'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 47K
+                        line: '47'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 48A
+                        line: '48'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 48C
+                        line: '48'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 48H
+                        line: '48'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 48K
+                        line: '48'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49A
+                        line: '49'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - 1W
+                          - CH
+                          - E
+                          - L
+                          - O
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49B
+                        line: '49'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - E
+                          - L
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49C
+                        line: '49'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - E
+                          - L
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 49D
+                        line: '49'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - B
+                          - CH
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 49E
+                        line: '49'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 49G
+                        line: '49'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - B
+                          - CH
+                          - I
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49H
+                        line: '49'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - E
+                          - L
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49J
+                        line: '49'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                          - E
+                          - L
+                      - seat_name: PREMIUM SEAT
+                        offer_item_ids:
+                          - PRICE1-SEG1-JPY
+                        designator: 49K
+                        line: '49'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - 1W
+                          - CH
+                          - E
+                          - L
+                          - O
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50A
+                        line: '50'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50B
+                        line: '50'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50C
+                        line: '50'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50D
+                        line: '50'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50E
+                        line: '50'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50G
+                        line: '50'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50H
+                        line: '50'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50J
+                        line: '50'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 50K
+                        line: '50'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51A
+                        line: '51'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51B
+                        line: '51'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51C
+                        line: '51'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51D
+                        line: '51'
+                        column: D
+                        availability: false
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51E
+                        line: '51'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51G
+                        line: '51'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51H
+                        line: '51'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51J
+                        line: '51'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 51K
+                        line: '51'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52A
+                        line: '52'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52B
+                        line: '52'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52C
+                        line: '52'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52D
+                        line: '52'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52E
+                        line: '52'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52G
+                        line: '52'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52H
+                        line: '52'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52J
+                        line: '52'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 52K
+                        line: '52'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53A
+                        line: '53'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53B
+                        line: '53'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53C
+                        line: '53'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53D
+                        line: '53'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53E
+                        line: '53'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53G
+                        line: '53'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53H
+                        line: '53'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53J
+                        line: '53'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 53K
+                        line: '53'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54A
+                        line: '54'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54B
+                        line: '54'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54C
+                        line: '54'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54D
+                        line: '54'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54E
+                        line: '54'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54G
+                        line: '54'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54H
+                        line: '54'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54J
+                        line: '54'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 54K
+                        line: '54'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55A
+                        line: '55'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55B
+                        line: '55'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55C
+                        line: '55'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55D
+                        line: '55'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55E
+                        line: '55'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55G
+                        line: '55'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55H
+                        line: '55'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55J
+                        line: '55'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 55K
+                        line: '55'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56A
+                        line: '56'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56B
+                        line: '56'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56C
+                        line: '56'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56D
+                        line: '56'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56E
+                        line: '56'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56G
+                        line: '56'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56H
+                        line: '56'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56J
+                        line: '56'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 56K
+                        line: '56'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57A
+                        line: '57'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57B
+                        line: '57'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57C
+                        line: '57'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57D
+                        line: '57'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57E
+                        line: '57'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57G
+                        line: '57'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57H
+                        line: '57'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57J
+                        line: '57'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 57K
+                        line: '57'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58A
+                        line: '58'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58B
+                        line: '58'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58C
+                        line: '58'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58D
+                        line: '58'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58E
+                        line: '58'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58G
+                        line: '58'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58H
+                        line: '58'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58J
+                        line: '58'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 58K
+                        line: '58'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59A
+                        line: '59'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59B
+                        line: '59'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59C
+                        line: '59'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59D
+                        line: '59'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59E
+                        line: '59'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59G
+                        line: '59'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59H
+                        line: '59'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59J
+                        line: '59'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 59K
+                        line: '59'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60A
+                        line: '60'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60B
+                        line: '60'
+                        column: B
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60C
+                        line: '60'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60D
+                        line: '60'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60E
+                        line: '60'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60G
+                        line: '60'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60H
+                        line: '60'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60J
+                        line: '60'
+                        column: J
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 60K
+                        line: '60'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61A
+                        line: '61'
+                        column: A
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61C
+                        line: '61'
+                        column: C
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61D
+                        line: '61'
+                        column: D
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61E
+                        line: '61'
+                        column: E
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - '9'
+                          - CH
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61G
+                        line: '61'
+                        column: G
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61H
+                        line: '61'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 61K
+                        line: '61'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 62H
+                        line: '62'
+                        column: H
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - A
+                          - CH
+                          - H
+                          - I
+                      - seat_name: STANDARD ZONE
+                        offer_item_ids:
+                          - PRICE3-SEG1-JPY
+                        designator: 62K
+                        line: '62'
+                        column: K
+                        availability: true
+                        characteristics:
+                          - '1'
+                          - CH
+                          - W
+  /ndc/v1/sq/order_create:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Create
+      description: >-
+        Create the booking and generate a booking reference.
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Order Create
+
+        >
+
+        > **or**
+
+        >
+
+        > Air Shopping → Offer Price → Service List **and/or** Seat Availability
+        → Order Create
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>ParamType</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>response_id</b></td><td>int</td><td>NO</td><td>response_id
+        returned by <b>"offer_price"</b> endpoint
+        response</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>ndc_params
+        </b>are returned by "<b>offer_price</b>" endpoint response (<b>order_id,
+        offer_id, offer_item_id,
+        pax_references)</b><br></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td><b>offer_id
+        </b>returned by <b>"offer_price"</b> endpoint
+        response</td></tr><tr><td><b>offer_item_ids</b></td><td>array</td><td>NO</td><td><b>offer_item_ids
+        </b>returned by <b>"offer_price"</b> endpoint
+        response</td></tr><tr></tr><tr><td><b>offer_item_id</b></td><td>string</td><td>NO</td><td>ex
+        SP1F-11871384704547919629-1-1</td></tr><tr><td><b>pax_ref_ids</b></td><td>array</td><td>NO</td><td>ex
+        PAX1, PAX2,
+        PAX11</td></tr><tr><td><b>traveller_list</b></td><td>array</td><td>NO</td><td><br>A
+        list of passengers (<b> first_name_passport, family_name_passport,
+        title, gender_id, birthdate, passenger_type, passenger_id, lang
+        </b>)<br></td></tr><tr><td><b>first_name_passport</b></td><td>string</td><td>NO</td><td>The
+        name of the PAX entered on the detail
+        screen.</td></tr><tr><td><b>family_name_passport</b></td><td>string</td><td>NO</td><td>The
+        name of the PAX entered on the detail
+        screen.</td></tr><tr><td><b>title</b></td><td>string</td><td>NO</td><td>ex
+        MR
+        MRS</td></tr><tr><td><b>gender_id</b></td><td>int</td><td>NO</td><td>This
+        is the PAX Gender ID entered on the detail screen. ex 1: Male 2:
+        Female</td></tr><tr><td><b>birthdate</b></td><td>string</td><td>NO</td><td>PAX's
+        date of birth as entered on the details screen. ex
+        2000-01-01</td></tr><tr><td><b>passenger_type</b></td><td>string</td><td>NO</td><td>ex
+        ADT CHD
+        INF</td></tr><tr><td><b>passenger_id</b></td><td>string</td><td>NO</td><td>ex
+        PAX1</td></tr><tr><td><b>lang</b></td><td>string</td><td>NO</td><td>ex
+        JP
+        Fixed</td></tr><tr><td><b>contact_list</b></td><td>inferred</td><td>NO</td><td>Passenger
+        contact info (<b> email, phone_number, phone_label,
+        country_cod</b>)<br></td></tr><tr><td><b>email</b></td><td>string</td><td>NO</td><td>The
+        email address entered on the details
+        screen.</td></tr><tr><td><b>phone_number</b></td><td>string</td><td>NO</td><td>The
+        phone number entered on the details
+        screen.</td></tr><tr><td><b>phone_label</b></td><td>string</td><td>NO</td><td>ex
+        Mobile
+        screen.</td></tr><tr><td><b>country_code</b></td><td>string</td><td>NO</td><td>phone
+        number country code ex 81 fixed<br></td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              response_id: response_id
+              ndc_params:
+                offer_id: offer_id
+                offer_item_ids:
+                  - offer_item_id: offer_item_id
+                    pax_ref_ids:
+                      - PAX1
+                traveller_list:
+                  - first_name_passport: ASIF
+                    family_name_passport: RAHMAN
+                    title: MR
+                    gender_id: 1
+                    birthdate: '1990-10-15'
+                    passenger_type: ADT
+                    passenger_id: PAX1
+                    lang: JP
+                contact_list:
+                  email: eng.asifrahman@gmail.com
+                  phone_number: '751769286'
+                  phone_label: Mobile
+                  country_code: '81'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:26:11 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '382'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gds_pnr: 6PDXXF
+                carrier_pnr: ''
+                order_id: SQ_6PDXXF
+                segment_info_list:
+                  - carrier_cd: SQ
+                    flight_number: '012'
+                    dep_airport_cd: NRT
+                    dep_datetime: '2023-03-08T18:15:00'
+                    arr_airport_cd: LAX
+                    arr_datetime: '2023-03-08T11:15:00'
+                    segment_ref_id: SEG1
+                payment_info:
+                  total_amount: 107710
+                  currency_cd: JPY
+                  ticketing_limit_datetime: '2023-01-21T14:00:00.000Z'
+  /ndc/v1/sq/{orderChangeSeat}:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Change (Seat)
+      description: >-
+        Issue a ticket or change the ticket and handle re-issuance
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Order Create → Seat Availability → Order
+        Change (Seat)
+
+        >
+
+        > **or**
+
+        >
+
+        > Air Shopping → Offer Price → Order Create → **###** → Seat
+        Availability → Order Change (Seat)
+
+        >
+
+        > **###** means some other operations
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>response_id</b></td><td>string</td><td>NO</td><td><b>response_id</b>
+        is returned by "<b>offer_price</b>" endpoint
+        response</td></tr><tr><td><b>change_type</b></td><td>string</td><td>NO</td><td><b>SEAT
+        </b>is fixed here. [Seat: <b>SEAT</b>, Baggage: <b>ADDITONAL_SSR</b>,
+        Payment:
+        <b>PAYMENT]</b></td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>order_id,<br>owner,<br>contact_list,<br>pax_list,<br>seat_data</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>owner</b></td><td>string</td><td>NO</td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>contact_list</b></td><td>array</td><td>NO</td><td>Contact
+        list</td></tr><tr><td><b>pax_list</b></td><td>array</td><td>NO</td><td>Passenger
+        information</td></tr><tr><td><b>seat_data</b></td><td>inferred</td><td>NO</td><td><b>offer_id,<br>owner,<br>select_seat_list</b></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td><b>offer_id
+        </b>is returned by<b> "offer_price" </b>endpoint
+        response</td></tr><tr><td><b>owner</b></td><td>string</td><td>NO</td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>select_seat_list</b></td><td>array</td><td>NO</td><td>Provide
+        available seat info from <b>"seat_availability" </b>endpoint response
+        (<b>pax_ref_id,<br>line,<br>column,<br>offer_item_id,<br>segment_ref_id</b>)</td></tr><tr><td><b>pax_ref_id</b></td><td>string</td><td>NO</td><td><b>Use
+        pax_references </b>which are returned by<b> "seat_availability"
+        </b>endpoint
+        response</td></tr><tr><td><b>line</b></td><td>string</td><td>NO</td><td><b>line</b>
+        is returned by<b> "Seat Availibility" </b>endpoint
+        response</td></tr><tr><td><b>column</b></td><td>string</td><td>NO</td><td><b>column
+        </b>is returned by<b> "seat_availability" </b>endpoint
+        response</td></tr><tr><td><b>offer_item_id</b></td><td>string</td><td></td><td><b>offer_item_id
+        </b>is returned by<b> "seat_availability" </b>endpoint
+        response</td></tr><tr><td><b>segment_ref_id</b></td><td>string</td><td>NO</td><td><b>segment_ref_id
+        </b>is returned by<b> "order_create" </b>endpoint
+        response</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              response_id: response_id
+              change_type: SEAT
+              ndc_params:
+                order_id: order_id
+                owner: owner
+                contact_list: []
+                pax_list: []
+                seat_data:
+                  offer_id: offer_id
+                  owner: owner
+                  select_seat_list:
+                    - pax_ref_id: PAX2
+                      line: '42'
+                      column: B
+                      offer_item_id: PRICE1-SEG1-JPY
+                      segment_ref_id: segment_ref_id
+      parameters:
+        - name: orderChangeSeat
+          in: path
+          schema:
+            type: string
+            readOnly: true
+            example: order_change
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:26:54 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '128'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gds_pnr: 6PDXXF
+                carrier_pnr: ''
+                order_id: SQ_6PDXXF
+                ticketing_limit: '2023-01-21T14:00:00.000Z'
+                total_amount: 120780
+  /ndc/v1/sq/{orderChangeBaggage}:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Change (Baggage)
+      description: >-
+        Issue additional services (SSR) or or change the SSR and handle
+        re-issuance.
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Order Create → Service List → Order
+        Change (Baggage)
+
+        >
+
+        > **or**
+
+        >
+
+        > Air Shopping → Offer Price → Order Create → **###** → Service List →
+        Order Change (Baggage)
+
+        >
+
+        > **###** means some other operations
+
+
+        <h3>Request Parameters / Payloads</h3>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>response_id</b></td><td>string</td><td>NO</td><td><b>response_id</b>
+        is returned by "<b>offer_price</b>" endpoint
+        response</td></tr><tr><td><b>change_type</b></td><td>string</td><td>NO</td><td><b>ADDITONAL_SSR
+        </b>is fixed here.<br>(Seat: <b>SEAT</b>, Baggage: <b>ADDITONAL_SSR,
+        Payment:
+        PAYMENT)</b></td></tr><tr><td><b>ndc_params</b></td><td>infrade</td><td>NO</td><td><b>order_id,<br>owner,<br>contact_list,<br>pax_list,<br>service_data</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>owner</b></td><td>string</td><td>NO</td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>contact_list</b></td><td>array</td><td>NO</td><td>contact
+        list</td></tr><tr><td><b>pax_list</b></td><td>array</td><td>NO</td><td>passenger
+        list</td></tr><tr><td><b>service_data</b></td><td>inferred</td><td>NO</td><td>Baggage
+        data
+        (<b>offer_id,</b><br><b>owner,</b><br><b>selected_services)</b></td></tr><tr><td><b>offer_id</b></td><td>string</td><td>NO</td><td>Use
+        <b>ndc_offer_id </b>which is returned by "<b>service_list</b>" endpoint
+        response.</td></tr><tr><td><b>owner</b></td><td>string</td><td></td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"service_list"</b> endpoint
+        response</td></tr><tr><td><b>selected_services</b></td><td>array</td><td>NO</td><td>Selected
+        Services.
+        (<b>pax_ref_id,</b><br><b>offer_item_id)</b></td></tr><tr><td><b>pax_ref_id</b></td><td>string</td><td></td><td>Use
+        <b>#_reference_id </b>from <b>target_pax_list </b>which is returned by
+        "<b>service_list</b>" endpoint
+        response.</td></tr><tr><td><b>offer_item_id</b></td><td>string</td><td></td><td>Use
+        <b>ndc_offer_item_id </b>which<b> </b>is returned by
+        "<b>service_list</b>" endpoint response.</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              response_id: response_id
+              change_type: ADDITONAL_SSR
+              ndc_params:
+                order_id: order_id
+                owner: owner
+                contact_list: []
+                pax_list: []
+                service_data:
+                  offer_id: offer_id
+                  owner: owner
+                  selected_services:
+                    - pax_ref_id: PAX2
+                      offer_item_id: offer_item_id
+      parameters:
+        - name: orderChangeBaggage
+          in: path
+          schema:
+            type: string
+            readOnly: true
+            example: order_change
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:28:16 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '128'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gds_pnr: 6PDXXF
+                carrier_pnr: ''
+                order_id: SQ_6PDXXF
+                ticketing_limit: '2023-01-21T14:00:00.000Z'
+                total_amount: 136460
+  /ndc/v1/sq/{orderChangePayment}:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Change (Payment)
+      description: >-
+        Trigger payment
+
+
+        **Must follow the request steps below**
+
+
+        > Air Shopping → Offer Price → Order Create → Order Change (Payment)
+
+        >
+
+        > **or**
+
+        >
+
+        > Air Shopping → Offer Price → Order Create → **###** → Order Change
+        (Payment)
+
+        >
+
+        > **###** means some other operations
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>response_id</b></td><td>string</td><td>NO</td><td><b>response_id</b>
+        is returned by "<b>offer_price</b>" endpoint
+        response</td></tr><tr><td><b>change_type</b></td><td>string</td><td>NO</td><td><b>PAYMENT
+        </b>is fixed here.<b> [</b>Seat: <b>SEAT</b>, Baggage:
+        <b>ADDITONAL_SSR</b>, Payment:
+        <b>PAYMENT]</b></td></tr><tr><td><b>ndc_params</b></td><td>infrade</td><td>NO</td><td><b>order_id,</b><b><br></b><b>owner,</b><b><br></b><b>contact_list,</b><b><br></b><b>pax_list,</b><b><br></b><b>payment_data</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>owner</b></td><td>string</td><td>NO</td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>contact_list</b></td><td>array</td><td>NO</td><td>Contact
+        list</td></tr><tr><td><b>pax_list</b></td><td>array</td><td>NO</td><td>Passenger
+        informations</td></tr><tr><td><b>payment_data</b></td><td>inferred</td><td>NO</td><td>Payment
+        Data
+        (<b>currency_cd,</b><br><b>total_amount</b>)</td></tr><tr><td><b>currency_cd</b></td><td>string</td><td>NO</td><td><b>currency_cd
+        </b>is returned in <b>"order_create"</b> / "<b>order_retrieve</b>"
+        endpoint
+        response</td></tr><tr><td><b>total_amount</b></td><td>int</td><td>NO</td><td><b>total_amount
+        </b>is returned in <b>"order_create"</b> / "<b>order_retrieve</b>"
+        endpoint response. <b>N.B: </b>the <b>total_amount </b>cloud be only the
+        unpaid amount if you already made any payment
+        before.</td></tr></tbody></table>
+
+
+        **N.B:** You are allowed to pay more than once based on "**Order
+        Change**" request.
+
+
+        You pay total amount after immeditae order create.
+
+
+        But if you issue a seat by "Order Change" request then you need to pay
+        that specific amount after seat issuance.
+
+
+        So, in this case you need to pay twice.
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              response_id: response_id
+              change_type: PAYMENT
+              ndc_params:
+                order_id: order_id
+                owner: owner
+                contact_list: []
+                pax_list: []
+                payment_data:
+                  currency_cd: currency_cd
+                  total_amount: total_amount
+      parameters:
+        - name: orderChangePayment
+          in: path
+          schema:
+            type: string
+            readOnly: true
+            example: order_change
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:29:22 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '104'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gds_pnr: 6PDXXF
+                carrier_pnr: ''
+                order_id: SQ_6PDXXF
+                ticketing_limit: ''
+                total_amount: 136460
+  /ndc/v1/sq/order_retrieve:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Retrieve
+      description: >-
+        **Must follow the request steps below**
+
+
+        > Order Create → Order Retrieve
+
+        >
+
+        > **or**
+
+        >
+
+        > Order Create → Order Change → Order Retrieve
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>order_id,<br>owner</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>owner</b></td><td>string</td><td>NO</td><td>Airline
+        marketing carrier code. Use <b>carrier_code</b> which is returned in
+        <b>"order_create"</b> endpoint response</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              ndc_params:
+                order_id: order_id
+                owner: owner
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:26:21 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '1120'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Order Retrieve
+                  value:
+                    gds_pnr: 6PDXXF
+                    carrier_pnr: ''
+                    order_id: SQ_6PDXXF
+                    booking_date: ''
+                    total_cost: 107710
+                    total_cost_jpy: 107710
+                    currency: JPY
+                    paid_status: '-'
+                    hold_date_time: '2023-01-21T14:00:00.000Z'
+                    journey_flights:
+                      - flight_number: '012'
+                        carrier_cd: SQ
+                        departure_datetime: '2023-03-08T18:15:00'
+                        departure_airport: NRT
+                        arrival_datetime: '2023-03-08T11:15:00'
+                        arrival_airport: LAX
+                        flight_status: '-'
+                        equipment_type: ''
+                        segment_key: SEG1
+                        departure_terminal: '1'
+                        arrival_terminal: B
+                        class_of_service: 'N'
+                    passengers:
+                      - pax_ref_id: PAX2
+                        booking_name: RAHMAN ASIF
+                        sur_name: RAHMAN
+                        given_name: ASIF
+                        gender: Male
+                        birthday: '1990-10-15'
+                        fare_price_amount: 99000
+                        fare_price_amount_jpy: 99000
+                        travel_fee_amount: 8710
+                        travel_fee_amount_jpy: 8710
+                        pax_segment:
+                          lift_status: ''
+                          over_book_indicator: ''
+                        pax_type: ADT
+                        ticket_number: ''
+                        issue_date: ''
+                    options: []
+                    ticket_doc_infos: []
+                    order_item:
+                      airs:
+                        - order_item_id: SQ_6PDXXF_AIR-1
+                          total_price: 107710
+                          status: ''
+                      seats: []
+                      others: []
+                    raw_passengers: []
+                    raw_contacts: []
+                    ndc_total: 107710
+                    is_void: false
+                example-1:
+                  summary: Order Retrieve (After seat change)
+                  value:
+                    gds_pnr: 6PDXXF
+                    carrier_pnr: ''
+                    order_id: SQ_6PDXXF
+                    booking_date: ''
+                    total_cost: 120780
+                    total_cost_jpy: 120780
+                    currency: JPY
+                    paid_status: '-'
+                    hold_date_time: '2023-01-21T14:00:00.000Z'
+                    journey_flights:
+                      - flight_number: '012'
+                        carrier_cd: SQ
+                        departure_datetime: '2023-03-08T18:15:00'
+                        departure_airport: NRT
+                        arrival_datetime: '2023-03-08T11:15:00'
+                        arrival_airport: LAX
+                        flight_status: '-'
+                        equipment_type: ''
+                        segment_key: SEG1
+                        departure_terminal: '1'
+                        arrival_terminal: B
+                        class_of_service: 'N'
+                    passengers:
+                      - pax_ref_id: PAX2
+                        booking_name: RAHMAN ASIF
+                        sur_name: RAHMAN
+                        given_name: ASIF
+                        gender: Male
+                        birthday: '1990-10-15'
+                        fare_price_amount: 99000
+                        fare_price_amount_jpy: 99000
+                        travel_fee_amount: 8710
+                        travel_fee_amount_jpy: 8710
+                        pax_segment:
+                          lift_status: ''
+                          over_book_indicator: ''
+                        pax_type: ADT
+                        ticket_number: ''
+                        issue_date: ''
+                    options:
+                      - amount: 13070
+                        pax_ref_id: PAX2
+                        passenger_name: RAHMAN ASIF
+                        option_cd: RQST_1
+                        option_number: SEAT312
+                        charge_detail: SEG1
+                        description: '座席: 41A (EMD:)'
+                        detail: 'RAHMAN ASIF | セグメント: NRT-LAX | ステータス: HK'
+                    ticket_doc_infos: []
+                    order_item:
+                      airs:
+                        - order_item_id: SQ_6PDXXF_AIR-1
+                          total_price: 107710
+                          status: ''
+                      seats:
+                        - service_id: SEAT312
+                          order_item_id: SQ_6PDXXF_SRV34
+                          row: '41'
+                          column: A
+                          total_price: 13070
+                          status: HK
+                      others: []
+                    raw_passengers: []
+                    raw_contacts: []
+                    ndc_total: 120780
+                    is_void: false
+                example-2:
+                  summary: Order Retrieve (After baggage change)
+                  value:
+                    gds_pnr: 6PDXXF
+                    carrier_pnr: ''
+                    order_id: SQ_6PDXXF
+                    booking_date: ''
+                    total_cost: 136460
+                    total_cost_jpy: 136460
+                    currency: JPY
+                    paid_status: '-'
+                    hold_date_time: '2023-01-21T14:00:00.000Z'
+                    journey_flights:
+                      - flight_number: '012'
+                        carrier_cd: SQ
+                        departure_datetime: '2023-03-08T18:15:00'
+                        departure_airport: NRT
+                        arrival_datetime: '2023-03-08T11:15:00'
+                        arrival_airport: LAX
+                        flight_status: '-'
+                        equipment_type: ''
+                        segment_key: SEG1
+                        departure_terminal: '1'
+                        arrival_terminal: B
+                        class_of_service: 'N'
+                    passengers:
+                      - pax_ref_id: PAX2
+                        booking_name: RAHMAN ASIF
+                        sur_name: RAHMAN
+                        given_name: ASIF
+                        gender: Male
+                        birthday: '1990-10-15'
+                        fare_price_amount: 99000
+                        fare_price_amount_jpy: 99000
+                        travel_fee_amount: 8710
+                        travel_fee_amount_jpy: 8710
+                        pax_segment:
+                          lift_status: ''
+                          over_book_indicator: ''
+                        pax_type: ADT
+                        ticket_number: ''
+                        issue_date: ''
+                    options:
+                      - amount: 13070
+                        pax_ref_id: PAX2
+                        passenger_name: RAHMAN ASIF
+                        option_cd: RQST_1
+                        option_number: SEAT312
+                        charge_detail: SEG1
+                        description: '座席: 41A (EMD:)'
+                        detail: 'RAHMAN ASIF | セグメント: NRT-LAX | ステータス: HK'
+                      - amount: 15680
+                        pax_ref_id: PAX2
+                        passenger_name: RAHMAN ASIF
+                        option_cd: PIEC_1
+                        option_number: SSR41
+                        charge_detail: SEG1
+                        description: '受託手荷物: 1個 (EMD:)'
+                        detail: 'RAHMAN ASIF | セグメント: NRT-LAX | ステータス: HK'
+                    ticket_doc_infos: []
+                    order_item:
+                      airs:
+                        - order_item_id: SQ_6PDXXF_AIR-1
+                          total_price: 107710
+                          status: ''
+                      seats:
+                        - service_id: SEAT312
+                          order_item_id: SQ_6PDXXF_SRV34
+                          row: '41'
+                          column: A
+                          total_price: 13070
+                          status: HK
+                      others:
+                        - service_id: SSR41
+                          order_item_id: SQ_6PDXXF_SRV42
+                          total_price: 15680
+                          status: HK
+                    raw_passengers: []
+                    raw_contacts: []
+                    ndc_total: 136460
+                    is_void: false
+                example-3:
+                  summary: Order Retrieve (After payment change)
+                  value:
+                    gds_pnr: 6PDXXF
+                    carrier_pnr: ''
+                    order_id: SQ_6PDXXF
+                    booking_date: '2023-01-18'
+                    total_cost: 136460
+                    total_cost_jpy: 136460
+                    currency: JPY
+                    paid_status: 支払済
+                    hold_date_time: ''
+                    journey_flights:
+                      - flight_number: '012'
+                        carrier_cd: SQ
+                        departure_datetime: '2023-03-08T18:15:00'
+                        departure_airport: NRT
+                        arrival_datetime: '2023-03-08T11:15:00'
+                        arrival_airport: LAX
+                        flight_status: '-'
+                        equipment_type: ''
+                        segment_key: SEG1
+                        departure_terminal: '1'
+                        arrival_terminal: B
+                        class_of_service: 'N'
+                    passengers:
+                      - pax_ref_id: PAX2
+                        booking_name: RAHMAN ASIF
+                        sur_name: RAHMAN
+                        given_name: ASIF
+                        gender: Male
+                        birthday: '1990-10-15'
+                        fare_price_amount: 99000
+                        fare_price_amount_jpy: 99000
+                        travel_fee_amount: 8710
+                        travel_fee_amount_jpy: 8710
+                        pax_segment:
+                          lift_status: ''
+                          over_book_indicator: ''
+                        pax_type: ADT
+                        ticket_number: 6182440169665,6184565056642,6184565056641
+                        issue_date: 2023-01-18,2023-01-18,2023-01-18
+                    options:
+                      - amount: 13070
+                        pax_ref_id: PAX2
+                        passenger_name: RAHMAN ASIF
+                        option_cd: RQST_1
+                        option_number: SEAT312
+                        charge_detail: SEG1
+                        description: '座席: 41A (EMD:6184565056641)'
+                        detail: 'RAHMAN ASIF | セグメント: NRT-LAX | ステータス: HK'
+                      - amount: 15680
+                        pax_ref_id: PAX2
+                        passenger_name: RAHMAN ASIF
+                        option_cd: PIEC_1
+                        option_number: SSR41
+                        charge_detail: SEG1
+                        description: '受託手荷物: 1個 (EMD:6184565056642)'
+                        detail: 'RAHMAN ASIF | セグメント: NRT-LAX | ステータス: HK'
+                    ticket_doc_infos:
+                      - ticket_document:
+                          - ticket_doc_number: '6182440169665'
+                            type: T
+                            coupon_info:
+                              coupon_ref_id: SEG1
+                              service_reference: ''
+                              remark: ''
+                            date_of_issue: '2023-01-18'
+                            time_of_issue: ''
+                        pax_ref_id: PAX2
+                        price: 107710
+                      - ticket_document:
+                          - ticket_doc_number: '6184565056642'
+                            type: J
+                            coupon_info:
+                              coupon_ref_id: SEG1
+                              service_reference: SSR41
+                              remark: ''
+                            date_of_issue: '2023-01-18'
+                            time_of_issue: ''
+                        pax_ref_id: PAX2
+                        price: 15680
+                      - ticket_document:
+                          - ticket_doc_number: '6184565056641'
+                            type: J
+                            coupon_info:
+                              coupon_ref_id: SEG1
+                              service_reference: SEAT312
+                              remark: ''
+                            date_of_issue: '2023-01-18'
+                            time_of_issue: ''
+                        pax_ref_id: PAX2
+                        price: 13070
+                    order_item:
+                      airs:
+                        - order_item_id: SQ_6PDXXF_AIR-1
+                          total_price: 107710
+                          status: ''
+                      seats:
+                        - service_id: SEAT312
+                          order_item_id: SQ_6PDXXF_SRV34
+                          row: '41'
+                          column: A
+                          total_price: 13070
+                          status: HK
+                      others:
+                        - service_id: SSR41
+                          order_item_id: SQ_6PDXXF_SRV42
+                          total_price: 15680
+                          status: HK
+                    raw_passengers: []
+                    raw_contacts: []
+                    ndc_total: 136460
+                    is_void: true
+  /ndc/v1/sq/order_reshop:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Reshop
+      description: >-
+        Find paid order history
+
+
+        **Must follow the request steps below**
+
+
+        > Order Create → Order Change (Payment) → Order Retrieve → Order Reshop
+
+        >
+
+        > **or**
+
+        >
+
+        > Order Create → Seat Availability → Order Change (Seat) → Order Change
+        (Payment) → Order Retrieve → Order Reshop
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>order_id,<br>order_items</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>order_items</b></td><td>inferred</td><td></td><td><b>order_item_id</b></td></tr><tr><td><b>order_item_id</b></td><td>string</td><td>NO</td><td><b>order_item_id</b>
+        returned by "<b>order_retrieve</b>" endpoint
+        response</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              ndc_params:
+                order_id: order_id
+                order_items:
+                  - order_item_id: order_item_id
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:30:14 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '452'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                refund_amount: 0
+                non_refund_amount: 0
+                adt_refund_amount: 0
+                chd_refund_amount: 0
+                inf_refund_amount: 0
+                order_items:
+                  - pax_ref_id: PAX2
+                    base_amount: 99000
+                    tax: 8710
+                    total_amount: 107710
+                    penalty_amount: 0
+                    refund_amount: 0
+                  - pax_ref_id: PAX2
+                    base_amount: 13070
+                    tax: 0
+                    total_amount: 13070
+                    penalty_amount: 0
+                    refund_amount: 0
+                  - pax_ref_id: PAX2
+                    base_amount: 15680
+                    tax: 0
+                    total_amount: 15680
+                    penalty_amount: 0
+                    refund_amount: 0
+  /ndc/v1/sq/order_cancel:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Order Cancel
+      description: >-
+        Cancel the booking, and either void the order or get your users a
+        refund.
+
+
+        **Must follow the request steps below**
+
+
+        > Order Create → Order Cancel
+
+        >
+
+        > **or**
+
+        >
+
+        > Order Create → **###** → Order Cancel
+
+        >
+
+        > **###** means some other operations
+
+
+        <h4>Request Parameters / Payloads</h4>
+
+
+        <table><tbody><tr><th><b>Param</b></th><th><b>Type</b></th><th><b>Optional</b></th><th><b>Description</b></th></tr><tr><td><b>gds_code</b></td><td>int</td><td>NO</td><td>GDS
+        Code</td></tr><tr><td><b>ndc_params</b></td><td>inferred</td><td>NO</td><td><b>order_id,<br>refund_amount</b></td></tr><tr><td><b>order_id</b></td><td>string</td><td>NO</td><td><b>order_id
+        </b>is returned in <b>"order_create"</b> endpoint
+        response</td></tr><tr><td><b>refund_amount</b></td><td>int</td><td>NO</td><td>Refund
+        amount</td></tr></tbody></table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              ndc_params:
+                order_id: order_id
+                refund_amount: 0
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:30:59 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '260'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                gds_pnr: ''
+                carrier_pnr: ''
+                is_success: true
+                canceled_pnr: ''
+                ticket_doc_infos:
+                  - ticket_documents:
+                      - coupon_infos:
+                          - status: V
+                  - ticket_documents:
+                      - coupon_infos:
+                          - status: V
+                  - ticket_documents:
+                      - coupon_infos:
+                          - status: V
+  /ndc/v1/sq/check_ssr_price:
+    post:
+      tags:
+        - SQ NDC API
+      summary: Check SSR Price
+      description: |-
+        <h4>Request Parameters / Payloads</h4>
+        <table>
+           <tbody>
+              <tr>
+                 <th><b>Param</b></th>
+                 <th><b>Type</b></th>
+                 <th><b>Optional</b></th>
+                 <th><b>Description</b></th>
+              </tr>
+              <tr>
+                 <td class="text-center"><b>gds_code</b></td>
+                 <td>int</td>
+                 <td>NO</td>
+                 <td>GDS Code</td>
+              </tr>
+              <tr>
+                 <td><b>ndc_params</b></td>
+                 <td>inferred</td>
+                 <td>NO</td>
+                 <td><b>offer_id,</b><b><br></b><b>owner,</b><b><br></b><b>selected_services,</b><b><br></b><b>pax_references</b></td>
+              </tr>
+              <tr>
+                 <td><b>offer_id</b></td>
+                 <td>string</td>
+                 <td>NO</td>
+                 <td><b>offer_id</b><br>is returned by "<b>service_list</b>" endpoint response</td>
+              </tr>
+              <tr>
+                 <td><b>owner</b></td>
+                 <td>string</td>
+                 <td>NO</td>
+                 <td>Airline marketing carrier code. Use <b>carrier_code</b> which is returned in <b>"order_create"</b> endpoint response</td>
+              </tr>
+              <tr>
+                 <td><b>selected_services</b></td>
+                 <td>array</td>
+                 <td></td>
+                 <td><b>offer_item_id,</b><b><br></b><b>pax_ref_id</b></td>
+              </tr>
+              <tr>
+                 <td><b>offer_item_id</b></td>
+                 <td>string</td>
+                 <td>NO</td>
+                 <td>ex SP1F-11871384704547919629-1-1.</td>
+              </tr>
+              <tr>
+                 <td><b>pax_ref_id</b></td>
+                 <td>string</td>
+                 <td>NO</td>
+                 <td>ex PAX1, PAX2, PAX11</td>
+              </tr>
+              <tr>
+                 <td><b>pax_references</b></td>
+                 <td>inferred</td>
+                 <td>NO</td>
+                 <td>Passenger ID information. (<b>adt_pax_ref,</b><b><br></b><b>chd_pax_ref,</b><b><br></b><b>inf_pax_ref</b>)</td>
+              </tr>
+              <tr>
+                 <td><b>adt_pax_ref</b></td>
+                 <td>array</td>
+                 <td>NO</td>
+                 <td>ex PAX1</td>
+              </tr>
+              <tr>
+                 <td><b>chd_pax_ref</b></td>
+                 <td>array</td>
+                 <td>NO</td>
+                 <td>ex PAX2</td>
+              </tr>
+              <tr>
+                 <td><b>inf_pax_ref</b></td>
+                 <td>array</td>
+                 <td>NO</td>
+                 <td>ex PAX11</td>
+              </tr>
+           </tbody>
+        </table>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+            example:
+              gds_code: 26
+              ndc_params:
+                offer_id: offer_id
+                owner: owner
+                selected_services:
+                  - offer_item_id: offer_item_id
+                    pax_ref_id: PAX1
+                pax_references:
+                  adt_pax_ref:
+                    - PAX1
+                  chd_pax_ref: null
+                  inf_pax_ref: null
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Date:
+              schema:
+                type: string
+                example: Wed, 18 Jan 2023 05:31:27 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '161'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                ndc_params:
+                  offer_id: SP2F-3102613995809601570-1
+                  owner: SQ
+                  selected_services:
+                    - offer_item_id: SP2F-3102613995809601570-1-1
+                      pax_ref_id: PAX1
